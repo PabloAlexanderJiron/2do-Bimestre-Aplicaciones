@@ -7,6 +7,7 @@ import Reportes from '@/components/Reportes'
 
 Vue.use(Router)
 
+/* eslint-disable eol-last */
 export default new Router({
   routes: [
     {

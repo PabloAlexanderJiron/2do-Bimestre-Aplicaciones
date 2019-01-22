@@ -30,17 +30,17 @@
 <script>
 export default {
   name: 'App',
-  data(){
-    return{
-      cuestionarios:[
-        {title:'Operaciones Matematicas'},
-        {title:'Calculo'},
-        {title:'Fechas civicas'},
-        {title:'Computación paralela'}
+  data () {
+    return {
+      cuestionarios: [
+        {title: 'Operaciones Matematicas'},
+        {title: 'Calculo'},
+        {title: 'Fechas civicas'},
+        {title: 'Computación paralela'}
       ]
     }
   },
-  methods:{
+  methods: {
     storiesBy: function (writer) {
       return this.stories.filter(function (story) {
         return story.writer === writer
