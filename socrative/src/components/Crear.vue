@@ -102,8 +102,8 @@
           </div>
         </div>
         <div class="row">
-            <div class="col-md-8" v-for="(item) in quiz" :key="item.index">
-              pregunta Nº {{item.index}}: {{item.pregunta}}. Respuesta correcta {{item.opc}}
+            <div class="col-md-8" v-for="(item,index) in quiz" :key="item.index">
+              pregunta Nº {{index}}: {{item.pregunta}}. Respuesta correcta {{item.opc}}
             </div>
         </div>
     </div>
@@ -123,7 +123,7 @@ export default {
       r2: '',
       r3: '',
       rc: '',
-      index:'' 
+      index:'', 
     }
   },
   methods: {
