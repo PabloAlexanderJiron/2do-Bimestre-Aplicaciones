@@ -80,7 +80,7 @@ import { clean } from 'semver';
                   <input type="radio" name="False" v-model="rc" value="Falso"> FALSO
                 </label>
               </div>
-              <button v-if="anadir" v-on:click="saveTF">Añadir</button>
+              <button class="btn btn-primary" v-if="anadir" v-on:click="saveTF">Añadir</button>
             </form>
           </div>
           <div class="col-md-4">
@@ -99,7 +99,7 @@ import { clean } from 'semver';
               <div class="form-group">
                 <input type="text" class="form-control" id="" placeholder="Ingresar Respuesta..." v-model="rc">
               </div>
-              <button v-if="anadir" v-on:click="saveSA">Añadir</button>
+              <button class="btn btn-primary" v-if="anadir" v-on:click="saveSA">Añadir</button>
             </form>
           </div>
           <div class="col-md-4">
@@ -144,8 +144,9 @@ export default {
         },
         opc: this.rc
       })
-      this.connect()
-      console.log(this.quiz)
+      // this.connect()
+      // console.log(this.quiz)
+      localStorage.setItem('data-vue', JSON.stringify(this.cuestonario))
     },
     saveTF: function () {
       this.quiz.push({
@@ -166,17 +167,17 @@ export default {
       console.log(this.quiz)
     },
     connect () {
-      socket.onopen = this.openWs
-      socket.onerror = this.errorWs
-      socket.onmessage = this.messageWs
+      socket.onopen = this.openWs()
+      socket.onerror = this.errorWs()
+      socket.onmessage = this.messageWs()
     },
     openWs () {
       // console.log(sw.estado + " " + ws.nombre);
-      alert('Usuario conectado')
+      // alert('Usuario conectado')
       this.sendMessage(this.quiz)
     },
     errorWs (evt) {
-      alert('Usuario fallido')
+      // alert('Usuario fallido')
       // console.log(evt.quiz);
     },
     messageWs () {
