@@ -1,4 +1,5 @@
 /* eslint-disable eol-last */
+import { clean } from 'semver';
 <template>
   <div id="app">
     <div class="container">
@@ -11,7 +12,7 @@
           <div class="col-md-4">
             <form>
               <div class="form-group">
-                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Nombre del Cuestionario">
+                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Nombre del Cuestionario" v-model="Q">
               </div>
             </form>
           </div>
@@ -72,8 +73,12 @@
                 <input type="text" class="form-control" placeholder="Ingresar Pregunta... " v-model="p">
               </div>
               <div class="form-group">
-                <button type="button" class="btn btn-success">Verdadero</button>
-                <button type="button" class="btn btn-danger">Falso</button>
+                <label>
+                  <input type="radio" name="True" v-model="rc" value="Verdadero"> VERDADERO
+                </label>
+                <label>
+                  <input type="radio" name="False" v-model="rc" value="Falso"> FALSO
+                </label>
               </div>
               <button v-if="anadir" v-on:click="saveTF">Añadir</button>
             </form>
@@ -84,7 +89,7 @@
         </div>
         <div class="row" id="ShortAnswer" v-if="SA" >
           <div class="col-md-8">
-            <form v-on:submit.prevent="addNewTodo">
+            <form>
               <div class="form-group">
                 <h3>Respuesta Corta</h3>
               </div>
@@ -102,7 +107,7 @@
           </div>
         </div>
         <div class="row">
-            <div class="col-md-8" v-for="(item,index) in quiz" :key="item.index">
+            <div class="col-md-8" v-for="(item, index) in quiz" :key="item.index">
               pregunta Nº {{index}}: {{item.pregunta}}. Respuesta correcta {{item.opc}}
             </div>
         </div>
@@ -110,6 +115,7 @@
   </div>
 </template>
 <script>
+var socket = new WebSocket('ws://localhost:4567/profesor')
 export default {
   data () {
     return {
@@ -118,62 +124,69 @@ export default {
       SA: false,
       anadir: false,
       quiz: [], // cuestionario
+      Q: '',
       p: '',
       r1: '',
       r2: '',
       r3: '',
-      rc: '',
-      index:'', 
+      rc: ''
     }
   },
   methods: {
-    clear: function() {
-      this.p = ''
-      this.r1 = ''
-      this.r2 = ''
-      this.r3 = ''
-      this.rc = ''
-    },
     saveMO: function () {
       this.quiz.push({
-        tipo: 1,
+        tipo: 'MO',
         pregunta: this.p,
-        op: {
+        op: { // opciones
           op1: this.r1,
           op2: this.r2,
           op3: this.r3
         },
         opc: this.rc
       })
-      localStorage.setItem('datos', JSON.stringify(this.quiz))
+      this.connect()
+      console.log(this.quiz)
     },
-    saveTF: function() {
+    saveTF: function () {
       this.quiz.push({
-        tipo: 2,
+        tipo: 'TF',
         pregunta: this.p,
         opc: this.rc
-      });
-      app.clear()
-      localStorage.setItem('datos', JSON.stringify(this.quiz))
+      })
+      this.connect()
+      console.log(this.quiz)
     },
-    saveSA: function() {
+    saveSA: function () {
       this.quiz.push({
-        tipo: 3,
+        tipo: 'RC',
         pregunta: this.p,
         opc: this.rc
-      });
-      app.clear()
-      localStorage.setItem('datos', JSON.stringify(this.quiz))
+      })
+      this.connect()
+      console.log(this.quiz)
     },
-    created: function() {
-    this.connect()
-    let database = JSON.parse(localStorage.getItem('datos'))
-    if (database === null) {
-      this.quiz = []
-    } else {
-      this.quiz = database
+    connect () {
+      socket.onopen = this.openWs
+      socket.onerror = this.errorWs
+      socket.onmessage = this.messageWs
+    },
+    openWs () {
+      // console.log(sw.estado + " " + ws.nombre);
+      alert('Usuario conectado')
+      this.sendMessage(this.quiz)
+    },
+    errorWs (evt) {
+      alert('Usuario fallido')
+      // console.log(evt.quiz);
+    },
+    messageWs () {
+      // json = JSON.parse(evt.quiz);
+      // console.log(evt.quiz);
+    },
+    sendMessage (msgData) {
+      var json = JSON.stringify(msgData)
+      socket.send(json)
     }
-  }
   }
 }
 </script>

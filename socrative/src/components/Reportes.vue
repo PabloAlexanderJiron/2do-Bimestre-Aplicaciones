@@ -1,5 +1,6 @@
 <template>
-  <div id="app">
-    <h1>Reportes</h1>
+  <div id="main">
+    <h1 v-for="item in datos" :key="item.index">Reportes</h1>
+    {{item.a}}
   </div>
 </template>
