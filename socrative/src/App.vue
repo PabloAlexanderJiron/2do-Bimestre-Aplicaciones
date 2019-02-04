@@ -6,7 +6,10 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active" v-for="item in menuItems" :key="item.title">
-            <a class="nav-link" v-bind:href="item.link"><router-link :to="item.link">{{item.title}}</router-link> <span class="sr-only">(current)</span></a>
+            <a class="nav-link" v-bind:href="item.link">
+              <router-link :to="item.link">{{item.title}}</router-link>
+              <span class="sr-only">(current)</span>
+            </a>
           </li>
         </ul>
       </div>

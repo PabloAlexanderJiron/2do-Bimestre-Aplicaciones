@@ -55,7 +55,7 @@ import { clean } from 'semver';
                 <input type="text" class="form-control" id="" placeholder="Ingresar Respuesta cor... " v-model="rc">
               </div>
               <div class="form-group">
-                <button class="btn btn-primary" v-if="anadir" v-on:click="saveMO">Añadir</button>
+                <button class="btn btn-primary" v-if="anadir" v-on:click="addMO">Añadir</button>
               </div>
             </form>
           </div>
@@ -80,7 +80,7 @@ import { clean } from 'semver';
                   <input type="radio" name="False" v-model="rc" value="Falso"> FALSO
                 </label>
               </div>
-              <button class="btn btn-primary" v-if="anadir" v-on:click="saveTF">Añadir</button>
+              <button class="btn btn-primary" v-if="anadir" v-on:click="addTF">Añadir</button>
             </form>
           </div>
           <div class="col-md-4">
@@ -99,7 +99,7 @@ import { clean } from 'semver';
               <div class="form-group">
                 <input type="text" class="form-control" id="" placeholder="Ingresar Respuesta..." v-model="rc">
               </div>
-              <button class="btn btn-primary" v-if="anadir" v-on:click="saveSA">Añadir</button>
+              <button class="btn btn-primary" v-if="anadir" v-on:click="addSA">Añadir</button>
             </form>
           </div>
           <div class="col-md-4">
@@ -107,10 +107,18 @@ import { clean } from 'semver';
           </div>
         </div>
         <div class="row">
-            <div class="col-md-8" v-for="(item, index) in quiz" :key="item.index">
-              pregunta Nº {{index}}: {{item.pregunta}}. Respuesta correcta {{item.opc}}
-            </div>
-        </div>
+      <div class="col-md-12 text-center">
+        <h1>cuestionario</h1>
+      </div>
+      <div class="col-md-8" v-for="(item, index) in quiz" :key="item.index">
+        <p>
+          <span>
+            pregunta Nº {{index}}: {{item.pregunta}}. Respuesta correcta {{item.opc}}
+          </span>
+          <button @click="remove(index)">Remove</button>
+        </p>
+      </div>
+    </div>
     </div>
   </div>
 </template>
@@ -133,7 +141,14 @@ export default {
     }
   },
   methods: {
-    saveMO: function () {
+    clear: function () {
+      this.p = ''
+      this.r1 = ''
+      this.r2 = ''
+      this.r3 = ''
+      this.rc = ''
+    },
+    addMO: function () {
       this.quiz.push({
         tipo: 'MO',
         pregunta: this.p,
@@ -144,11 +159,13 @@ export default {
         },
         opc: this.rc
       })
+      this.clear()
       // this.connect()
       // console.log(this.quiz)
-      localStorage.setItem('data-vue', JSON.stringify(this.cuestonario))
+      const parsed = JSON.stringify(this.quiz)
+      localStorage.setItem('quiz', parsed)
     },
-    saveTF: function () {
+    addTF: function () {
       this.quiz.push({
         tipo: 'TF',
         pregunta: this.p,
@@ -157,7 +174,7 @@ export default {
       this.connect()
       console.log(this.quiz)
     },
-    saveSA: function () {
+    addSA: function () {
       this.quiz.push({
         tipo: 'RC',
         pregunta: this.p,
@@ -166,6 +183,21 @@ export default {
       this.connect()
       console.log(this.quiz)
     },
+    remove (x) {
+      this.quiz.splice(x, 1)
+      const parsed = JSON.stringify(this.quiz)
+      localStorage.setItem('quiz', parsed)
+    },
+    mounted () {
+      if (localStorage.getItem('quiz')) {
+        try {
+          this.quiz = JSON.parse(localStorage.getItem('quiz'))
+        } catch (e) {
+          localStorage.removeItem('quiz')
+        }
+      }
+    },
+    // conecion websocket
     connect () {
       socket.onopen = this.openWs()
       socket.onerror = this.errorWs()

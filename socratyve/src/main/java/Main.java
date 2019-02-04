@@ -5,8 +5,10 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import mongo.savejson;
 import org.eclipse.jetty.websocket.api.Session;
+
+
 public class Main {
     public static Map<Session, String> userUsernameMap = new ConcurrentHashMap<>();
     public static AtomicInteger userNumber = new AtomicInteger();
@@ -22,6 +24,7 @@ public class Main {
             try {
                 //cjson.convert(message);
                 System.out.println(message);
+                new savejson().save(message);
                 //System.out.println(message);
                 //session.getRemote().sendString(message);
             } catch (Exception e) {
