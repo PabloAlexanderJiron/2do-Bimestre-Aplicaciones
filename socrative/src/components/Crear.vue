@@ -150,6 +150,7 @@ export default {
     },
     addMO: function () {
       this.quiz.push({
+        idP: this.Q,
         tipo: 'MO',
         pregunta: this.p,
         op: { // opciones
@@ -160,10 +161,10 @@ export default {
         opc: this.rc
       })
       this.clear()
-      // this.connect()
-      // console.log(this.quiz)
-      const parsed = JSON.stringify(this.quiz)
-      localStorage.setItem('quiz', parsed)
+       this.connect()
+       console.log(this.quiz)
+      //const parsed = JSON.stringify(this.quiz)
+      //localStorage.setItem('quiz', parsed)
     },
     addTF: function () {
       this.quiz.push({
